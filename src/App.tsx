@@ -1,16 +1,50 @@
-import { useState } from 'react'
-import Auth from '@components/Auth';
-import './App.css'
+import React from 'react'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-function App() {
+import AppLayout from '@components/AppLayout'
+import AuthProvider from '@components/AuthProvider'
+import ProtectedRoute from '@components/ProtectedRoute'
+
+import Home from '@routes/Home.tsx'
+import Login from '@routes/Login'
+import SignUp from '@routes/SignUp'
+import Dashboard from '@routes/Dashboard'
+
+const router = createBrowserRouter([{
+    path: "/",
+    element: <AppLayout />,
+    children: [
+        {
+            path: "/",
+            element: <Home />,
+        },
+        {
+            path: "/login",
+            element: <Login />,
+        },
+        {
+            path: "/sign-up",
+            element: <SignUp />,
+        },
+        {
+            path: "/",
+            element: <ProtectedRoute />,
+            children: [
+                {
+                    path: "/dashboard",
+                    element: <Dashboard />,
+                }
+            ]
+        },
+    ]
+}]);
+
+const App: React.FC = (): JSX.Element => {
     return (
-        <div className="App">
-            <h1 className="text-3xl font-bold underline">
-                Hello world!
-            </h1>
-            <Auth/>
-        </div>
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
     );
-}
+};
 
-export default App
+export default App;
